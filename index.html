@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Leke - Tienda</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&display=swap" rel="stylesheet">
+<style>
+   body {
+    background-color: #F4ECFA;
+    color: #4A4A4A;
+    font-family: 'League Spartan', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 10px;  /* menos padding en general */
+  box-sizing: border-box;  /* evita que padding sume al width */
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.brand-logo {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.brand-logo img {
+    max-width: 100px;
+    width: 100%;
+    height: auto;
+}
+
+/* Productos */
+.product {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 24px;
+    border: 1px solid #D6CBE8;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 16px;
+}
+
+.product img {
+    width: 180px;
+    height: auto;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.info {
+    flex-grow: 1;
+    padding: 10px;
+}
+
+.info p {
+    font-size: 14px;
+    margin: 6px 0;
+    line-height: 1.4;
+}
+
+/* Formulario */
+
+.form-section {
+  margin-top: 30px; /* un poquito menos para no bajar tanto */
+  padding: 0 10px; /* espacio lateral seguro en todos los lados */
+  box-sizing: border-box; /* evita que padding agrande el ancho */
+  width: 100%;
+  max-width: 100%; /* fuerza a que no se pase del contenedor */
+}
+
+/* Labels más legibles y con espacio */
+label {
+  display: block;
+  margin: 12px 0 6px;
+  font-weight: 500;
+  color: #4A4A4A;
+}
+
+/* Inputs, selects y textarea: 100% ancho, sin cortes */
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  font-family: inherit;
+  margin-top: 4px;
+  border: 1px solid #D6CBE8;
+  border-radius: 8px;
+  background-color: #FBF8FE;
+  color: #4A4A4A;
+  box-sizing: border-box; /* clave: evita que padding sume ancho extra */
+  font-size: 16px; /* legible en móvil */
+}
+/* Select de productos más llamativo */
+.info select:first-of-type {
+  border: 2px solid #B89AD9;
+  background-color: #fff;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.info select:first-of-type:hover {
+  border-color: #9E7CCB;
+  background-color: #f8f4fc;
+}
+
+.info select:first-of-type:focus {
+  outline: none;
+  border-color: #9E7CCB;
+  box-shadow: 0 0 0 3px rgba(184, 154, 217, 0.2);
+}
+/* Botón: full width, sin cortes */
+button {
+  margin-top: 20px;
+  padding: 14px;
+  width: 100%;
+  font-size: 18px; /* un poquito más grande para tocar fácil */
+  font-weight: bold;
+  background-color: #B89AD9;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-sizing: border-box;
+}
+
+button:hover {
+  background-color: #9E7CCB;
+}
+
+/* Ajustes específicos para móvil (pantallas < 600px) */
+@media (max-width: 600px) {
+  .form-section {
+    padding: 0 5px; /* aún menos padding para ganar espacio */
+  }
+
+  label {
+    font-size: 15px;
+  }
+
+  input, select, textarea {
+    padding: 12px;
+    font-size: 16px;
+  }
+
+  button {
+    font-size: 18px;
+    padding: 16px; /* más alto para tocar fácil en dedo */
+  }
+}
+
+/* Categorías colapsables */
+.category-header {
+    background: #FFFFFF;
+    border: 1px solid #D6CBE8;
+    border-radius: 10px;
+    padding: 14px 45px 14px 14px;
+    margin: 16px 0 8px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.category-header:hover {
+    background: #f8f4fc;
+    border-color: #B89AD9;
+}
+
+/* Flecha indicadora */
+.category-header::after {
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    border-right: 3px solid #B89AD9;
+    border-bottom: 3px solid #B89AD9;
+    transform: translateY(-50%) rotate(45deg);
+    transition: transform 0.3s ease;
+}
+
+/* Flecha rota cuando la categoría está abierta */
+.category-header.active::after {
+    transform: translateY(-50%) rotate(-135deg);
+}
+
+.category-content {
+    display: none;
+}
+
+/* =====================================
+   CARRITO – versión unificada y estable
+   ===================================== */
+#carritoContainer button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    background: #fff;
+    color: #4A4A4A;
+    border: 1px solid #D6CBE8;
+    border-radius: 10px;
+}
+
+#carritoDetalle {
+    display: none;
+    margin-top: 12px;
+    padding: 12px;
+    border: 1px solid #D6CBE8;
+    border-radius: 12px;
+    background: #FFFFFF;
+    width: 100%;
+}
+
+#cartItems {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+}
+
+#cartItems li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    background: #F4ECFA;
+    padding: 10px 12px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+}
+
+.cart-item-text {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    color: #4A4A4A;
+    line-height: 1.3;
+    word-break: break-word;
+    overflow-wrap: break-word;
+}
+
+.remove-btn {
+    flex-shrink: 0;
+    background: #ff4444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.remove-btn:hover {
+    background: #e60000;
+}
+
+#totalPedido {
+    margin-top: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #4A4A4A;
+    text-align: right;
+}
+
+/* Notificación */
+#notification {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: #4CAF50;
+    color: white;
+    padding: 14px 22px;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 2000;
+    display: none;
+    white-space: nowrap;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* Responsive */
+@media screen and (max-width: 600px) {
+    .product {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    #cartItems li {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: left;
+    }
+
+    .remove-btn {
+        margin-top: 4px;
+        align-self: flex-end;
+    }
+}
+
+@media screen and (min-width: 900px) {
+    .product img {
+        width: 100%;
+        max-width: 260px;
+    }
+}
+   /* ====================
+   ANIMACIONES GENERALES
+   ==================== */
+
+/* Hover en productos - sensación premium */
+.product {
+    transition: all 0.35s ease;
+    transform: translateY(0);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.product:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 16px 32px rgba(0,0,0,0.15);
+}
+
+.product img {
+    transition: transform 0.5s ease;
+    will-change: transform;
+}
+
+.product:hover img {
+    transform: scale(1.12);
+}
+
+/* Fade-in + slide-up al cargar productos (después de que se muestren) */
+.product {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.7s ease-out forwards;
+}
+
+/* Delay progresivo para que entren uno detrás del otro (general para todos los .product) */
+.product:nth-child(1) { animation-delay: 0.1s; }
+.product:nth-child(2) { animation-delay: 0.2s; }
+.product:nth-child(3) { animation-delay: 0.3s; }
+.product:nth-child(4) { animation-delay: 0.4s; }
+.product:nth-child(5) { animation-delay: 0.5s; }
+.product:nth-child(6) { animation-delay: 0.6s; }
+.product:nth-child(7) { animation-delay: 0.7s; }
+.product:nth-child(8) { animation-delay: 0.8s; }
+.product:nth-child(9) { animation-delay: 0.9s; }
+.product:nth-child(10) { animation-delay: 1.0s; }
+.product:nth-child(11) { animation-delay: 1.1s; }
+
+/* Keyframe para entrada */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Categorías: slide + fade suave (CORREGIDO - maneja display + max-height) */
+.category-content {
+    display: block;  /* ← CLAVE: permite que max-height funcione */
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s ease;
+    will-change: max-height, opacity;
+}
+
+.category-content.active {
+    max-height: 15000px;  /* grande para que quepa todo */
+    opacity: 1;
+}
+
+/* Feedback en botón Agregar al carrito */
+button[type="button"] {
+    transition: all 0.2s ease;
+    transform: scale(1);
+}
+
+button[type="button"]:active {
+    transform: scale(0.94);
+    background-color: #9E7CCB !important;
+}
+
+/* Notificación con pop + bounce */
+#notification {
+    opacity: 0;
+    transform: scale(0.6) translate(-50%, -50%);
+    transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+#notification.visible {
+    opacity: 1;
+    transform: scale(1) translate(-50%, -50%);
+    animation: bounceIn 0.6s ease;
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.6) translate(-50%, -50%); opacity: 0; }
+    50% { transform: scale(1.12) translate(-50%, -50%); opacity: 1; }
+    75% { transform: scale(0.95) translate(-50%, -50%); }
+    100% { transform: scale(1) translate(-50%, -50%); }
+}
+
+/* Ítems del carrito con fade-in al agregarse */
+#cartItems li {
+    opacity: 0;
+    transform: translateX(-20px);
+    animation: slideInRight 0.5s ease forwards;
+}
+
+@keyframes slideInRight {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+   }
+.banner-carousel {
+  max-width: 960px;
+  margin: 15px auto;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.banner-carousel img {
+  width: 100%;
+  height: auto;
+  display: none; /* oculta todas menos la primera */
+}
+
+.banner-carousel img:first-child {
+  display: block; /* muestra la primera */
+}
+.social-footer {
+  text-align: center;
+  margin: 15px 0 10px; /* menos margen para reducir altura */
+  padding: 5px 0; /* padding mínimo */
+  font-size: 13px;
+  color: #4A4A4A;
+  line-height: 1.2; /* reduce altura de línea */
+}
+
+.social-footer p {
+  margin: 0 0 5px; /* menos espacio entre texto e íconos */
+  font-weight: 500;
+}
+
+.social-footer a {
+  display: inline-block;
+  margin: 0 10px; /* espacio horizontal pequeño */
+  vertical-align: middle;
+}
+
+.social-footer img {
+  width: 28px; /* íconos muy pequeños y sutiles */
+  height: 28px;
+  transition: transform 0.2s ease;
+}
+
+.social-footer a:hover img {
+  transform: scale(1.2); /* leve efecto al hover */
+}
+/* Carrito – ajustado para móvil */
+#carritoContainer {
+  margin-top: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#carritoContainer button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  background: #fff;
+  color: #4A4A4A;
+  border: 1px solid #D6CBE8;
+  border-radius: 10px;
+  box-sizing: border-box;
+}
+
+#carritoDetalle {
+  display: none;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid #D6CBE8;
+  border-radius: 12px;
+  background: #FFFFFF;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%; /* evita que se pase del contenedor */
+}
+
+#cartItems {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  width: 100%;
+}
+
+#cartItems li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  background: #F4ECFA;
+  padding: 10px 12px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  box-sizing: border-box;
+  word-break: break-word; /* evita que texto largo corte */
+}
+
+.cart-item-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 14px;
+  color: #4A4A4A;
+  line-height: 1.3;
+}
+
+.remove-btn {
+  flex-shrink: 0;
+  background: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+#totalPedido {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #4A4A4A;
+  text-align: right;
+  width: 100%;
+  padding-right: 10px; /* evita corte en el borde derecho */
+}
+
+/* Ajustes específicos para móvil */
+@media (max-width: 600px) {
+  #carritoDetalle {
+    padding: 10px;
+  }
+
+  #cartItems li {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .remove-btn {
+    align-self: flex-end;
+    margin-left: 0;
+    margin-top: 5px;
+  }
+
+  #totalPedido {
+    text-align: center; /* en móvil centrado queda mejor */
+    padding-right: 0;
+    font-size: 17px;
+  }
+
+}
+/* Cartel de información de envío - MÁS VISIBLE */
+#infoEnvio {
+  margin: 15px 0;
+  padding: 16px;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  display: none;
+  border: 3px solid;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  animation: pulseInfo 2s ease-in-out infinite;
+}
+
+#infoEnvio.envio-gratis {
+  background: #d4edda;
+  border-color: #28a745;
+  color: #155724;
+}
+
+#infoEnvio.falta-envio {
+  background: #fff3cd;
+  border-color: #ff9800;
+  color: #856404;
+}
+
+@keyframes pulseInfo {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* Modal de confirmación */
+#modalConfirmacion {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content h3 {
+  color: #ff9800;
+  margin: 0 0 15px 0;
+  font-size: 22px;
+}
+
+.modal-content p {
+  color: #4A4A4A;
+  font-size: 16px;
+  line-height: 1.5;
+  margin: 15px 0;
+}
+
+.modal-content .falta-monto {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ff5722;
+  margin: 10px 0;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-buttons button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 0;
+}
+
+.btn-volver {
+  background: #6c757d;
+  color: white;
+}
+
+.btn-volver:hover {
+  background: #5a6268;
+}
+
+.btn-continuar {
+  background: #ff9800;
+  color: white;
+}
+
+.btn-continuar:hover {
+  background: #e68900;
+}
+</style>
+</head>
+<body><div id="notification">Se agregó al carrito</div>
+<div class="container">
+<div class="brand-logo">
+  <img src="https://i.imgur.com/Rnt7Mqo.png" alt="Leke">
+</div>
+<div class="banner-carousel">
+  <img src="https://i.imgur.com/d4etaOS.png" alt="sanvalentin">
+  <img src="https://i.ibb.co/cXYw1cw4/San-Valent-n.png" alt="cookie">
+  <img src="https://i.imgur.com/nFQgVJ7.png" alt="envios">
+
+
+</div>
+
+
+<form id="orderForm">
+<p style="text-align: center; color: #9E7CCB; font-size: 15px; margin: 20px 0 10px; font-weight: 500;">
+  👇 Tocá cada categoría para ver los productos y precios
+</p>
+<div id="products" class="products"></div>
+<div class="form-section">
+<div id="carritoContainer" style="margin-top: 20px;">
+<button onclick="toggleCarrito()" style="width: 100%; padding: 10px; font-size: 16px; font-weight: bold; background: #fff; color: #000; border: none; border-radius: 5px; text-align: center;" type="button">🛒 Ver pedido</button>
+<div id="carritoDetalle" style="display:none; margin-top:10px; border: 1px solid #fff; padding: 10px; text-align:center;">
+<ul id="cartItems" style="list-style:none; padding:0;"></ul>
+<p id="totalPedido" style="margin-top:10px;"><strong>Total: $0</strong></p>
+</div>
+</div><label>Nombre</label>
+<input id="name" required="" type="text"/>
+<label>Dirección</label>
+<input id="address" required="" type="text"/>
+<label>Número de timbre / Depto / Piso</label>
+<input id="timbre" type="text" placeholder="Ej: 5A, timbre 18, piso 3 dto B" />
+<label>Entre calles</label>
+<input id="cross" required="" type="text"/>
+<label>Localidad *</label>
+<select id="localidad" required>
+  <option value="">Elegí tu localidad</option>
+  <option value="longchamps_burzaco">Longchamps / Burzaco</option>
+   <option value="glew">Glew</option>
+  <option value="adrogue_marmol_turdera">Adrogué / Marmol / Calzada / Turdera</option>
+  <option value="temperley_lavallol">Temperley / Claypole / Lavallol</option>
+  <option value="lomas_banfield">Lomas de Zamora / Banfield</option>
+  <option value="escalada_lanus">Escalada / Lanús</option>
+</select>
+
+<!-- Cartel de información de envío (aparece dinámicamente) -->
+<!-- Cartel de información de envío (aparece dinámicamente) -->
+<div id="infoEnvio">
+  <!-- El texto se pone con JavaScript -->
+</div>
+
+
+<label>Aclaraciones</label>
+<textarea id="notes" rows="2"></textarea>
+<label>Método de pago</label>
+<select id="paymentMethod" required="">
+<option value="">Elegí una opción</option>
+<option value="efectivo">Efectivo</option>
+<option value="transferencia">Transferencia</option>
+</select>
+<button style="background-color: #25D366; color: #fff; font-weight: bold; font-size: 18px; padding: 15px; width: 100%; border: none; border-radius: 5px; margin-top: 20px;" type="submit">¡Enviar mi pedido por WhatsApp ahora!</button>
+</div>
+</form>
+
+<div class="social-footer">
+  <p style="font-size: 12px; margin: 5px 0 10px; color: #666;">Seguinos en Instagram y TikTok</p>
+  <a href="https://instagram.com/leke.arg" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.icons8.com/color/48/000000/instagram-new.png" alt="Instagram">
+  </a>
+  <a href="https://tiktok.com/@leke.arg1" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.icons8.com/color/48/000000/tiktok--v1.png" alt="TikTok">
+  </a>
+</div>
+</div>
+<script>
+const productsData = [
+   
+   {
+    name: "New York Cookie Oreo",
+    category: "Cookies",
+    description: "Con chips de chocolate y relleno con galletita oreo.",
+    image: "https://i.imgur.com/7oW14Of.jpeg",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+     {
+    name: "New York Cookie Malvavisco",
+    category: "Cookies",
+    description: "Con chips de chocolate, base de galletita y relleno con malvavisco.",
+    image: "https://i.imgur.com/UIFXuAZ.png",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+    {
+    name: "New York Cookie de Chocolate",
+    category: "Cookies",
+    description: "Con chips de chocolate semiamargo, blanco y con leche",
+    image: "https://i.imgur.com/swsNwFH.jpeg",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+    {
+    name: "New York Cookie de Pistacho",
+    category: "Cookies",
+    description: "Con pistachos picados y rellena con pasta de pistacho.",
+    image: "https://i.imgur.com/p4ATDzt.jpeg",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+  {
+      name: "New York Cookie Tofi",
+    category: "Cookies",
+    description: "Con pistachos picados y rellena con pasta de pistacho.",
+    image: "https://i.ibb.co/k2Ntw89z/cookie-tofi.jpg",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+  {
+      name: "New York Cookie Limón",
+    category: "Cookies",
+    description: "Masa de limon con relleno cremoso de limón",
+    image: "https://i.ibb.co/yMFX5Lb/limon.jpg",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+  { name: "New York Cookie Avellana",
+    category: "Cookies",
+    description: "Masa de vainilla con chips de chocolate, relleno de pasta de avellanas",
+    image: "https://i.ibb.co/Vpqr3PNy/avellana.jpg",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+   { name: "New York nuez y dulce de leche",
+    category: "Cookies",
+    description: "Masa de vainilla con chips de chocolate blanco y nuez, relleno de pasta de dulce de leche",
+    image: "https://i.imgur.com/Mo0cj6d.png",
+    options: [
+      "Unidad $5000",
+    ]
+  },
+  {
+    name: "Box cookies con dip de chocolate",
+    category: "Cookies",
+    description: "Incluye 15 cookies + dip de salsa de chocolate. Ideal para compartir",
+    image: "https://i.ibb.co/5h3mvZss/box-cokiees.jpg",
+    options: [
+      "Unidad $15000",
+    ]
+  },
+  {
+name: "Box degustación",
+    category: "Cookies",
+    description: "6 cookies diferentes para que no te pierdas de probar ningun sabor!",
+    image: "https://i.imgur.com/1XC3QCG.png",
+    options: [
+      "Box $27000",
+    ]
+  },
+  {
+
+    name: "Pan integral",
+    category: "Productos integrales",
+    description: "Pan integral, elaborado artesanalmente. Al ser un producto sin conservantes, recomendamos conservarlo en heladera o freezer desde el primer día para mantener su frescura. Se conserva en heladera (7 días) o freezer (3 meses). Peso: 600g.",
+    image: "https://i.imgur.com/HwHmwXy.jpeg",
+    options: [
+      "Unidad $3600",
+      "Unidad cortado $4600",
+      "Promo 3 unidades $10000",
+      "Promo 3 unidades cortadas $13000"
+    ]
+  },
+  {
+    name: "Fosforitos rellenos de jamón y queso",
+    category: "Catering",
+    description: "Más de 4 docenas: Encargar con 7 días de anticipación. ",
+    image: "https://i.imgur.com/lHOa0zA.jpeg",
+    options: [
+      "12 unidades $23.000"
+    ]
+  },
+  {
+    name: "Prepizza integral",
+    category: "Productos integrales",
+    description: "Pre pizza integral de tomate. Cocinar 5 min con queso + toppings. Freezer: 3 meses.",
+    image: "https://i.imgur.com/KM3M6T7.png",
+    options: [
+      "Unidad $3300",
+      "Promo 5 unidades $15000"
+    ]
+  },
+  {
+    name: "Premezcla de chocolate para bizcochuelo y cookies",
+    category: "Productos integrales",
+    description: "Mezclar con 1½ taza de leche y ¼ taza de aceite. Agregar frutas o nueces opcional. Hornear 45 min a 180°C.",
+    image: "https://i.imgur.com/lHGDMTX.png",
+    options: [
+      "Unidad $3500"
+    ]
+  },
+  {
+    name: "Chipa congelado",
+    category: "Congelados",
+    description: "Chipa de 30g c/u. Aprox. 35 por kilo. Hornear 20 min a 220°C sin descongelar.",
+    image: "https://i.imgur.com/ih1A0aS.png",
+    options: [
+      "1 kg $12000",
+      "4 kg $45000",
+      "7 kg $79000",
+      "10 kg $111000"
+    ]
+  },
+  {
+    name: "Chipa sandwich",
+    category: "Congelados",
+    description: "Hornear 20 min a 220°C. Dejar enfriar 5 min antes de cortar. Ideal para rellenar con lo que más te guste.",
+    image: "https://i.imgur.com/D3wLxvh.png",
+    options: [
+      "10 unidades $24000",
+      "50 unidades $110000"
+    ]
+  },
+  {
+    name: "Cookielada",
+    category: "Congelados",
+    description: "Tubo de cookies congeladas de avena, chocolate y nuez. Cortar y hornear 15-20 min a 180°C.",
+    image: "https://i.imgur.com/bqGg251.png",
+    options: [
+      "Unidad $8000",
+      "Promo 4 unidades $30000"
+    ]
+  },
+   {
+    name: "2 Panes cortados + 3 pre pizzas",
+    category: "Promos y Combos",
+    description: "Ahorra un 10% con esta PROMO",
+    image: "https://i.imgur.com/MseyM0i.jpeg",
+    options: [
+      "Unidad $17200"
+    ]
+  },
+  {
+    name: "1 kg de chipacitos congelados + 1 cookielada",
+    category: "Promos y Combos",
+    description: "Ahorra un 10% con esta PROMO y stockea el freezer de cositas ricas",
+    image: "https://i.imgur.com/GzazQ43.jpeg",
+    options: [
+      "Unidad $17300"
+    ]
+  }
+];
+
+const container = document.getElementById("products");
+let cart = [];
+
+// Sonidos – usa los links que te salen con "Raw" y cambiados a github.io
+const addToCartSound = new Audio('https://hacetupedido.github.io/Leke-tienda/se%20añadíó%20carrito.mp3');  // ajustá con tu link real
+const openCategorySound = new Audio('https://hacetupedido.github.io/Leke-tienda/categorías.mp3');  // ajustá
+const submitSound = new Audio('https://hacetupedido.github.io/Leke-tienda/WhatsApp.mp3');  // ajustá
+const categories = [...new Set(productsData.map(p => p.category))];
+
+categories.forEach(cat => {
+  const section = document.createElement("div");
+  section.className = "category";
+
+section.innerHTML = `
+ <div class="category-header${cat === "San Valentin" ? " san-valentin" : ""}" onclick="toggleCategory(this)">
+    ${cat}
+  </div>
+  <div class="category-content"></div>
+`;
+
+  container.appendChild(section);
+
+  const content = section.querySelector(".category-content");
+
+  productsData
+    .filter(p => p.category === cat)
+    .forEach((prod, i) => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <img src="${prod.image}" alt="${prod.name}">
+        <div class="info">
+          <p><strong>${prod.name}</strong></p>
+          <p>${prod.description}</p>
+          <label>Opción</label>
+         <select id="product${Math.random()}">
+  <option value="">👇 Ver precios y opciones</option>
+  ${prod.options.map(opt => `<option value="${opt}">${opt}</option>`).join("")}
+</select>
+          <label>Opción</label>
+<select id="product${Math.random()}">
+            ${[...Array(10)].map((_, n) => `<option value="${n+1}">${n+1}</option>`).join("")}
+          </select>
+          <button type="button" onclick="addToCartByName('${prod.name}', this)">Agregar al carrito</button>
+        </div>
+      `;
+      content.appendChild(div);
+    });
+});
+
+
+document.getElementById("orderForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  if (cart.length === 0) {
+    alert("Agregá al menos un producto al carrito.");
+    return;
+  }
+
+  // Obtenemos los valores
+  const name     = document.getElementById("name").value.trim();
+  const address  = document.getElementById("address").value.trim();
+  const timbre   = document.getElementById("timbre").value.trim() || "—";
+  const cross    = document.getElementById("cross").value.trim();
+  const notes    = document.getElementById("notes").value.trim() || "—";
+  const payment  = document.getElementById("paymentMethod").value;
+
+  // Localidad y config de envío
+  const localidadKey = document.getElementById("localidad").value;
+  const config = reglasEnvio[localidadKey] || { nombreMostrar: "No indicada", costoEnvio: "consultar", minimoGratis: 0 };
+  const localidadTexto = config.nombreMostrar || "No indicada";
+
+  // Validación
+  if (!name || !address || !cross || !payment || !localidadKey) {
+    alert("Completá los campos obligatorios:\n• Nombre\n• Dirección\n• Entre calles\n• Método de pago\n• Localidad");
+    return;
+  }
+
+  // Armamos el mensaje
+  let message = "Hola Leke! Quiero hacer un pedido:\n\n";
+
+  let subtotal = 0;
+  cart.forEach(item => {
+    const precioStr = item.option.split("$")[1]?.replace(/[^0-9]/g, "") || "0";
+    const precio = parseInt(precioStr, 10) || 0;
+    subtotal += precio * item.qty;
+
+    message += `• ${item.name}  ${item.option}  ×${item.qty}\n`;
+  });
+
+  // Cálculo de envío
+  let envioValor = 0;
+  let envioTexto = "consultar";
+
+  if (typeof config.costoEnvio === "number") {
+    if (subtotal >= config.minimoGratis) {
+      envioValor = 0;
+      envioTexto = "GRATIS 🎉";
+    } else {
+      envioValor = config.costoEnvio;
+      envioTexto = `$${config.costoEnvio.toLocaleString('es-AR')}`;
+    }
+  } else {
+    envioTexto = config.costoEnvio;
+  }
+
+  const totalFinal = subtotal + envioValor;
+
+  // VERIFICAR SI FALTA PARA ENVÍO GRATIS
+  if (subtotal < config.minimoGratis && typeof config.costoEnvio === "number") {
+    const falta = config.minimoGratis - subtotal;
+    document.getElementById("modalFalta").textContent = `$${falta.toLocaleString('es-AR')}`;
+    pedidoPendiente = construirMensajeCompleto(message, subtotal, envioValor, envioTexto, totalFinal, name, address, timbre, cross, localidadTexto, notes, payment);
+    document.getElementById("modalConfirmacion").style.display = "flex";
+    return; // No enviamos todavía
+  }
+
+  // Si ya tiene envío gratis o no aplica, enviar directo
+  message = construirMensajeCompleto(message, subtotal, envioValor, envioTexto, totalFinal, name, address, timbre, cross, localidadTexto, notes, payment);
+
+  const whatsappUrl = `https://wa.me/541153107714?text=${encodeURIComponent(message)}`;
+
+  submitSound.play().catch(() => {});
+
+  try {
+    window.open(whatsappUrl, "_blank");
+  } catch (err) {
+    console.error("Error abriendo WhatsApp:", err);
+    alert("No pude abrir WhatsApp automáticamente.\n\nCopiá y pegá este mensaje:\n\n" + message);
+  }
+});
+
+function construirMensajeCompleto(messageBase, subtotal, envioValor, envioTexto, totalFinal, name, address, timbre, cross, localidadTexto, notes, payment) {
+  let message = messageBase;
+  
+  message += `\nSubtotal (productos): $${subtotal.toLocaleString('es-AR')}\n`;
+  message += `Valor del envío: ${envioTexto}\n`;
+  message += `*Total a pagar: $${totalFinal.toLocaleString('es-AR')}*\n\n`;
+
+  if (payment === "transferencia") {
+    message += `_*Datos para la transferencia:*_\n`;
+    message += `_*Alias: leke.arg*_\n`;
+    message += `_*Titular: Brenda de Oar*_\n\n`;
+    message += `Una vez realizada la transferencia, por favor enviame el comprobante para confirmar y preparar tu pedido lo antes posible. ¡Gracias! 😊\n\n`;
+  } else {
+    message += `Pago en efectivo al momento de la entrega.\n\n`;
+  }
+
+  message += `👤 Nombre: ${name}\n`;
+  message += `📍 Dirección: ${address}\n`;
+  message += `🔔 Timbre / Depto / Piso: ${timbre}\n`;
+  message += `🚦 Entre calles: ${cross}\n`;
+  message += `📍 Localidad: ${localidadTexto}\n`;
+  message += `📝 Aclaraciones: ${notes}\n\n`;
+
+  message += `💳 Pago: ${payment === "transferencia" ? "Transferencia" : "Efectivo"}\n\n`;
+  message += "¡Muchas gracias! 😊";
+
+  return message;
+}
+
+function showNotification() {
+  const notif = document.getElementById("notification");
+  notif.classList.add("visible");
+  notif.style.display = "block";
+  
+  addToCartSound.play().catch(err => console.log("Sonido bloqueado:", err));
+
+  setTimeout(() => {
+    notif.classList.remove("visible");
+    setTimeout(() => { notif.style.display = "none"; }, 500);
+  }, 1800);
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  updateCartUI();
+}
+
+
+function toggleCarrito() {
+  const detalle = document.getElementById("carritoDetalle");
+  detalle.style.display = detalle.style.display === "none" ? "block" : "none";
+}
+
+
+function addToCart(index) {
+  const prod = productsData[index];
+  const option = document.getElementById("product" + index).value;
+  const qty = parseInt(document.getElementById("qty" + index).value);
+  if (!option) return alert("Seleccioná una opción válida.");
+  cart.push({ name: prod.name, option, qty });
+  updateCartUI();
+  showNotification();
+}
+
+function updateCartUI() {
+  const cartList = document.getElementById("cartItems");
+  const totalText = document.getElementById("totalPedido");
+  cartList.innerHTML = ""; // limpiamos
+
+  let total = 0;
+  cart.forEach((item, index) => {
+    const price = parseInt(item.option.split("$")[1].replace(/[^0-9]/g, ""));
+    total += price * item.qty;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <span class='cart-item-text'>${item.name} x${item.qty} ${item.option}</span>
+      <button class='remove-btn' onclick='removeFromCart(${index})'>Eliminar</button>`;
+    cartList.appendChild(li);
+    
+    // Forzamos que la animación se reproduzca cada vez que se agrega un ítem
+    li.offsetHeight;
+  });
+
+  totalText.innerHTML = `<strong>Total: $${total}</strong>`;
+actualizarInfoEnvio();
+}
+
+
+function toggleCategory(header) {
+  const content = header.nextElementSibling;
+  const isOpen = content.classList.contains("active");
+
+  // Cerrar todas las categorías y sus headers
+  document.querySelectorAll(".category-content").forEach(c => {
+    c.classList.remove("active");
+  });
+  document.querySelectorAll(".category-header").forEach(h => {
+    h.classList.remove("active");
+  });
+
+  if (!isOpen) {
+    content.classList.add("active");
+    header.classList.add("active");
+    openCategorySound.play().catch(err => console.log("Sonido bloqueado:", err));
+    
+    setTimeout(() => {
+      const firstProduct = content.querySelector(".product");
+      if (firstProduct) {
+        firstProduct.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        header.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 600);
+  }
+}
+
+
+function addToCartByName(name, btn) {
+  const product = productsData.find(p => p.name === name);
+  const selects = btn.parentElement.querySelectorAll("select");
+  const option = selects[0].value;
+  const qty = parseInt(selects[1].value);
+
+  if (!option) return alert("Seleccioná una opción válida.");
+
+  cart.push({ name: product.name, option, qty });
+  updateCartUI();
+  showNotification();
+}
+// Carousel solo para banners – rota cada 5 segundos
+const carousel = document.querySelector('.banner-carousel');
+if (carousel) {
+  const images = carousel.querySelectorAll('img');  // solo imgs dentro del carousel
+  let currentIndex = 0;
+
+  setInterval(() => {
+    images[currentIndex].style.display = 'none';
+    currentIndex = (currentIndex + 1) % images.length;
+    images[currentIndex].style.display = 'block';
+  }, 5000);  // cambia cada 5 segundos
+}
+// Reglas de envío personalizadas (ajustadas a lo que me pasaste)
+const reglasEnvio = {
+  "longchamps_burzaco":     { minimoGratis: 15000, costoEnvio: 2000, nombreMostrar: "Glew / Longchamps / Burzaco" },
+   "glew":     { minimoGratis: 17000, costoEnvio: 5000, nombreMostrar: "Glew" },
+  "adrogue_marmol_turdera":      { minimoGratis: 18000, costoEnvio: 4000, nombreMostrar: "Adrogué / Marmol / Turdera" },
+  "temperley_lavallol":          { minimoGratis: 20000, costoEnvio: 5000, nombreMostrar: "Temperley / Lavallol" },
+  "lomas_banfield":              { minimoGratis: 30000, costoEnvio: 6000, nombreMostrar: "Lomas de Zamora / Banfield" },
+  "escalada_lanus":              { minimoGratis: 50000, costoEnvio: 10000, nombreMostrar: "Escalada / Lanús" }
+};
+
+function actualizarInfoEnvio() {
+  const localidadKey = document.getElementById("localidad").value;
+  const infoDiv = document.getElementById("infoEnvio");
+  
+  if (!localidadKey) {
+    infoDiv.style.display = "none";
+    return;
+  }
+
+  const config = reglasEnvio[localidadKey];
+  if (!config) {
+    infoDiv.style.display = "none";
+    return;
+  }
+
+  // Calcular total actual del carrito
+  let total = 0;
+  cart.forEach(item => {
+    const precioStr = item.option.split("$")[1]?.replace(/[^0-9]/g, "") || "0";
+    const precio = parseInt(precioStr, 10) || 0;
+    total += precio * item.qty;
+  });
+
+  let texto = "";
+  const zona = config.nombreMostrar;
+
+  // Remover clases anteriores
+  infoDiv.className = "";
+
+  if (total >= config.minimoGratis) {
+    texto = `🎉 ¡ENVÍO <strong>GRATIS</strong> a ${zona}! 🎉<br><small>(Superaste el mínimo de $${config.minimoGratis.toLocaleString('es-AR')})</small>`;
+    infoDiv.classList.add("envio-gratis");
+  } else {
+    const falta = config.minimoGratis - total;
+    texto = `⚠️ Te faltan solo <strong>$${falta.toLocaleString('es-AR')}</strong> para ENVÍO GRATIS<br>
+             <small>Envío a ${zona}: $${config.costoEnvio.toLocaleString('es-AR')} | Gratis desde $${config.minimoGratis.toLocaleString('es-AR')}</small>`;
+    infoDiv.classList.add("falta-envio");
+  }
+
+  infoDiv.innerHTML = texto;
+  infoDiv.style.display = "block";
+}
+// Escuchar cambios en localidad
+document.getElementById("localidad").addEventListener("change", actualizarInfoEnvio);
+
+// Actualizar también cada vez que cambia el carrito
+actualizarInfoEnvio();
+
+// Variables globales para el modal
+let pedidoPendiente = null;
+
+function cerrarModal() {
+  document.getElementById("modalConfirmacion").style.display = "none";
+  pedidoPendiente = null;
+}
+
+function continuarSinEnvioGratis() {
+  if (pedidoPendiente) {
+    const whatsappUrl = `https://wa.me/541153107714?text=${encodeURIComponent(pedidoPendiente)}`;
+    submitSound.play().catch(() => {});
+    try {
+      window.open(whatsappUrl, "_blank");
+    } catch (err) {
+      console.error("Error abriendo WhatsApp:", err);
+      alert("No pude abrir WhatsApp automáticamente.\n\nCopiá y pegá este mensaje:\n\n" + pedidoPendiente);
+    }
+  }
+  cerrarModal();
+}
+</script>
+
+<!-- Modal de confirmación de envío -->
+<div id="modalConfirmacion">
+  <div class="modal-content">
+    <h3>⚠️ ¡Espera un momento!</h3>
+    <p>Todavía no alcanzaste el <strong>envío GRATIS</strong></p>
+    <p class="falta-monto">Te faltan solo <span id="modalFalta">$0</span></p>
+    <p>¿Querés agregar algo más al carrito y ahorrar en el envío?</p>
+    <div class="modal-buttons">
+      <button class="btn-volver" onclick="cerrarModal()">Volver y agregar más</button>
+      <button class="btn-continuar" onclick="continuarSinEnvioGratis()">Continuar igual</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
