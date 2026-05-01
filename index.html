@@ -757,9 +757,9 @@ button[type="button"]:active {
 <label>Localidad *</label>
 <select id="localidad" required>
   <option value="">Elegí tu localidad</option>
-  <option value="longchamps_glew_burzaco">Longchamps / Glew / Burzaco</option>
+  <option value="longchamps_burzaco">Longchamps / Burzaco</option>
   <option value="adrogue_temperley_lavallol_turdera">Adrogué / Temperley / Lavallol / Turdera</option>
-  <option value="claypole_calzada">Claypole / Calzada</option>
+  <option value="marmol_calzada">Marmol / Calzada</option>
   <option value="lomas_banfield">Lomas de Zamora / Banfield</option>
   <option value="escalada_lanus">Escalada / Lanús</option>
 </select>
@@ -1260,12 +1260,12 @@ if (carousel) {
 }
 // Reglas de envío personalizadas (ajustadas a lo que me pasaste)
 const reglasEnvio = {
-  "longchamps_burzaco":     { minimoGratis: 15000, costoEnvio: 2000, nombreMostrar: "Glew / Longchamps / Burzaco" },
-   "glew":     { minimoGratis: 17000, costoEnvio: 5000, nombreMostrar: "Glew" },
-  "adrogue_marmol_turdera":      { minimoGratis: 18000, costoEnvio: 4000, nombreMostrar: "Adrogué / Marmol / Turdera" },
-  "temperley_lavallol":          { minimoGratis: 20000, costoEnvio: 5000, nombreMostrar: "Temperley / Lavallol" },
-  "lomas_banfield":              { minimoGratis: 30000, costoEnvio: 6000, nombreMostrar: "Lomas de Zamora / Banfield" },
-  "escalada_lanus":              { minimoGratis: 50000, costoEnvio: 10000, nombreMostrar: "Escalada / Lanús" }
+  "longchamps_burzaco":     { minimoGratis: 18000, costoEnvio: 4000, nombreMostrar: "Longchamps / Burzaco" },
+   "temperley_lavallol":     { minimoGratis: 12000, costoEnvio: 2000, nombreMostrar: "Temperley / Lavallol" },
+  "adrogue_turdera":      { minimoGratis: 10000, costoEnvio: 1000, nombreMostrar: "Adrogué / Turdera" },
+  "marmol_calzada":          { minimoGratis: 20000, costoEnvio: 5000, nombreMostrar: "Marmol / Calzada" },
+  "lomas_banfield":              { minimoGratis: 15000, costoEnvio: 3000, nombreMostrar: "Lomas de Zamora / Banfield" },
+  "escalada_lanus":              { minimoGratis: 18000, costoEnvio: 4000, nombreMostrar: "Escalada / Lanús" }
 };
 
 function actualizarInfoEnvio() {
